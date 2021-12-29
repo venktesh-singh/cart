@@ -1,70 +1,90 @@
-import logo from './logo.svg';
-import './App.css';
-import ProductList from './components/ProductList';
-import Navbar from './components/Navbar';
-import React, { useState } from 'react';
-import Footer from './components/Footer';
+import React, { useState } from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import Navbar from "./components/Navbar";
+import ProductList from "./components/ProductList.js";
+import Footer from "./components/Footer.js";
+import AddItem from "./components/AddItem";
 
 function App() {
-  const productList = [
+  const products = [
     {
-      price : 99999,
-      name : "Iphone 10s",
-      quantity : 4,
+      price: 99999,
+      name: "IPhone 11 ",
+      quantity: 3,
     },
     {
-      price : 999999,
-      name : "Iphone 11s",
-      quantity : 1,
+      price: 9999,
+      name: "IPhone 11 Pro",
+      quantity: 2,
+    },
+  ];
+
+  let [productList, setProductList] = useState(products);
+  let [totalAmount, setTotalAmount] = useState(0);
+
+  const incrementQuantity = (index) => {
+    let newProductList = [...productList];
+    let newTotalAmount = totalAmount;
+    newProductList[index].quantity++;
+    newTotalAmount += newProductList[index].price;
+    setTotalAmount(newTotalAmount);
+    setProductList(newProductList);
+  };
+
+  const decrementQuantity = (index) => {
+    let newProductList = [...productList];
+    let newTotalAmount = totalAmount;
+    if (newProductList[index].quantity > 0) {
+      newProductList[index].quantity--;
+      newTotalAmount -= newProductList[index].price;
     }
-  ]
-
-  let [addproductList,setAddProductList] = useState(productList);
-  let [totalAmount,setTotalAmount] = useState(0);
- 
-  const  incrementQuantity = (index) => {
-    let newProductList = [...addproductList]
-    let newTotalAmount = totalAmount;
-    newProductList[index].quantity++
-    newTotalAmount += newProductList[index].price
-    setTotalAmount(newTotalAmount);  
-    setAddProductList(newProductList);
-  }
-
-  const  decrementQuantity = (index) => {
-    let newProductList = [...addproductList]
-    let newTotalAmount = totalAmount;
-    if(newProductList[index].quantity > 0 )
-    {  newProductList[index].quantity-- ;
-      newTotalAmount -=  newProductList[index].price;
-    } 
-    setTotalAmount(newTotalAmount);   
-    setAddProductList(newProductList);
-  }
+    setTotalAmount(newTotalAmount);
+    setProductList(newProductList);
+  };
 
   const resetQuantity = () => {
-    let newProductList = [...addproductList]
-    newProductList.map(()=>{
-      productList.quantity = 0
-    })
-    setAddProductList(newProductList);
+    let newProductList = [...productList];
+    newProductList.map((products) => {
+      products.quantity = 0;
+    });
+    setProductList(newProductList);
     setTotalAmount(0);
-  }
+  };
 
-  const removeItem = () => {
-    let newProductList = [...addproductList]
+  const removeItem = (index) => {
+    let newProductList = [...productList];
     let newTotalAmount = totalAmount;
-    newProductList.slice(index+1,1)
-    setAddProductList(newProductList);
-  }
+    newTotalAmount -=
+      newProductList[index].quantity * newProductList[index].price;
+    newProductList.splice(index, 1);
+    setProductList(newProductList);
+    setTotalAmount(newTotalAmount);
+  };
+
+  const addItem = (name, price) => {
+    let newProductList = [...productList];
+    newProductList.push({
+      price: price,
+      name: name,
+      quantity: 0,
+    });
+    setProductList(newProductList);
+  };
 
   return (
-    <>  
-        <Navbar/>
-        <main class="container">
-        <ProductList productList={ productList } incrementQuantity={incrementQuantity} decrementQuantity ={decrementQuantity} />
-        </main>
-        <Footer resetQuantity={ resetQuantity }/>
+    <>
+      <Navbar />
+      <main className="container mt-5">
+        <AddItem addItem={addItem} />
+        <ProductList
+          productList={productList}
+          incrementQuantity={incrementQuantity}
+          decrementQuantity={decrementQuantity}
+          removeItem={removeItem}
+        />
+      </main>
+      <Footer totalAmount={totalAmount} resetQuantity={resetQuantity} />
     </>
   );
 }
