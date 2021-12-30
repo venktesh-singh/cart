@@ -11,12 +11,12 @@ function App() {
     {
       price: 99999,
       name: "IPhone 11 ",
-      quantity: 3,
+      quantity: 0,
     },
     {
       price: 9999,
       name: "IPhone 11 Pro",
-      quantity: 2,
+      quantity: 0,
     },
   ];
 
